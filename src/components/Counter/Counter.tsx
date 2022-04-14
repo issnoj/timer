@@ -3,6 +3,7 @@ import * as dateFns from "date-fns";
 type Props = {
   seconds: number;
   active: boolean;
+  endDate?: Date;
 };
 
 const format = (seconds: number) => {
@@ -12,7 +13,7 @@ const format = (seconds: number) => {
   return `${h}:${m}:${s}`;
 };
 
-export const Counter = ({ seconds, active }: Props) => {
+export const Counter = ({ seconds, active, endDate }: Props) => {
   return (
     <div
       css={{
@@ -29,7 +30,7 @@ export const Counter = ({ seconds, active }: Props) => {
         {format(seconds)}
       </div>
 
-      {active && (
+      {active && endDate && (
         <div
           css={{
             color: "#707070",
@@ -39,10 +40,7 @@ export const Counter = ({ seconds, active }: Props) => {
             textAlign: "center",
           }}
         >
-          {dateFns.format(
-            dateFns.addSeconds(new Date(), seconds),
-            "yyyy年M月d日 HH時mm分ss秒"
-          )}
+          {dateFns.format(endDate, "yyyy年M月d日 HH時mm分ss秒")}
         </div>
       )}
     </div>

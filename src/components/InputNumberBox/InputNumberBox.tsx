@@ -34,10 +34,8 @@ export const InputNumberBox = ({
       />
       <div
         css={{
-          position: "absolute",
-          bottom: "1.5em",
-          right: 0,
-          fontSize: 18,
+          marginLeft: "1em",
+          fontSize: "16px",
         }}
       >
         {unit}

@@ -1,7 +1,7 @@
 import { CountDown } from "../CountDown/CountDown";
-import { useTimer } from "./useTimer";
+import { useAlarm } from "./useAlarm";
 
-export const Timer = () => {
+export const Alarm = () => {
   const {
     values,
     dispatch,
@@ -9,10 +9,9 @@ export const Timer = () => {
     counter,
     stop,
     active,
-    reset,
     restart,
     endDate,
-  } = useTimer();
+  } = useAlarm();
 
   return (
     <CountDown
@@ -22,7 +21,6 @@ export const Timer = () => {
       counter={counter}
       stop={stop}
       active={active}
-      reset={reset}
       restart={restart}
       endDate={endDate}
     />

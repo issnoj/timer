@@ -1,7 +1,6 @@
-import * as dateFns from "date-fns";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { useInterval } from "../../hooks/useInterval";
-import { Values } from "../CountDown/CountDown";
+import * as dateFns from "date-fns";
 
 type State = {
   h: number;
@@ -26,18 +25,24 @@ const reducer = (state: State, action: Action) => {
   return state;
 };
 
-const calculateSeconds = (state: State) => {
-  return state.h * 3600 + state.m * 60 + state.s;
+const calculate = (state: State) => {
+  const endDate = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate(),
+    state.h,
+    state.m,
+    state.s
+  );
+  const seconds = dateFns.differenceInSeconds(endDate, new Date());
+
+  return { seconds, endDate };
 };
 
-const calculateEndDate = (counter: number) => {
-  return dateFns.addSeconds(new Date(), counter);
-};
-
-export const useTimer = () => {
-  const values: Values = {
-    h: "",
-    m: "3",
+export const useAlarm = () => {
+  const values = {
+    h: new Date().getHours() + 1,
+    m: "00",
     s: "00",
   };
   const [state, dispatch] = useReducer(reducer, {
@@ -59,10 +64,9 @@ export const useTimer = () => {
 
   const onSubmit = useCallback(
     (e) => {
-      const seconds = calculateSeconds(state);
-      const endDate = calculateEndDate(seconds);
+      const { seconds, endDate } = calculate(state);
 
-      if (!seconds) {
+      if (seconds <= 0) {
         e.preventDefault();
         return;
       }
@@ -76,32 +80,18 @@ export const useTimer = () => {
   );
 
   const restart = useCallback(() => {
-    const seconds = calculateSeconds(state);
-    let endDate;
+    const { seconds, endDate } = calculate(state);
 
-    if (!seconds) {
+    if (seconds <= 0) {
+      setCounter(0);
+      stop();
       return;
     }
 
-    if (!counter) {
-      setCounter(seconds);
-      endDate = calculateEndDate(seconds);
-    } else {
-      endDate = calculateEndDate(counter);
-    }
-
-    setEndDate(endDate);
-    start();
-  }, [counter, start, state]);
-
-  const reset = useCallback(() => {
-    const seconds = calculateSeconds(state);
-    const endDate = calculateEndDate(seconds);
-
     setEndDate(endDate);
     setCounter(seconds);
-    stop();
-  }, [stop, state]);
+    start();
+  }, [start, stop, state]);
 
   return {
     values,
@@ -111,7 +101,6 @@ export const useTimer = () => {
     stop,
     active,
     restart,
-    reset,
     endDate,
   };
 };
