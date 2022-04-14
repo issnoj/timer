@@ -63,7 +63,7 @@ export const useAlarm = () => {
       if (active) {
         new Notification("時間になりました！", {
           body: "",
-          icon: "/favicon.svg",
+          icon: "/logo192.png",
         });
       }
       stop();
