@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { useInterval } from "../../hooks/useInterval";
 import * as dateFns from "date-fns";
+import { useApp } from "../../contexts/appContext";
 
 type State = {
   h: number;
@@ -55,15 +56,28 @@ export const useAlarm = () => {
     onUpdate: () => setCounter(counter - 1),
   });
   const [endDate, setEndDate] = useState<Date>();
+  const { permission, requestPermission } = useApp();
 
   useEffect(() => {
     if (counter <= 0) {
+      if (active) {
+        new Notification("時間になりました！", {
+          body: "",
+          icon: "/favicon.svg",
+        });
+      }
       stop();
     }
-  }, [counter, stop]);
+  }, [active, counter, stop]);
 
   const onSubmit = useCallback(
     (e) => {
+      if (permission !== "granted") {
+        requestPermission();
+        e.preventDefault();
+        return;
+      }
+
       const { seconds, endDate } = calculate(state);
 
       if (seconds <= 0) {
@@ -76,10 +90,15 @@ export const useAlarm = () => {
       start();
       e.preventDefault();
     },
-    [start, state]
+    [permission, requestPermission, start, state]
   );
 
   const restart = useCallback(() => {
+    if (permission !== "granted") {
+      requestPermission();
+      return;
+    }
+
     const { seconds, endDate } = calculate(state);
 
     if (seconds <= 0) {
@@ -91,7 +110,7 @@ export const useAlarm = () => {
     setEndDate(endDate);
     setCounter(seconds);
     start();
-  }, [start, stop, state]);
+  }, [permission, state, start, requestPermission, stop]);
 
   return {
     values,
