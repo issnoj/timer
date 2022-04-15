@@ -2,17 +2,24 @@ import { Button } from "../Button/Button";
 import { Counter } from "../Counter/Counter";
 import { InputNumberBox } from "../InputNumberBox/InputNumberBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { InputText } from "../InputText/InputText";
 
 export type Values = {
   h: number | string;
   m: number | string;
   s: number | string;
+  text: string;
 };
 
-type DispatchArgument = {
-  type: "h" | "m" | "s";
-  value: number;
-};
+export type DispatchArgument =
+  | {
+      type: "h" | "m" | "s";
+      value: number;
+    }
+  | {
+      type: "text";
+      value: string;
+    };
 
 type Props = {
   values: Values;
@@ -78,9 +85,13 @@ export const CountDown = ({
             />
           </div>
 
+          <InputText
+            value={values.text}
+            onChange={(value) => dispatch({ type: "text", value })}
+          />
+
           <div
             css={{
-              borderTop: "1px solid #707070",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-around",

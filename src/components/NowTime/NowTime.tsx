@@ -17,7 +17,17 @@ export const NowTime = () => {
         padding: "1.5em",
       }}
     >
-      <div>
+      <div
+        css={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src="/favicon.svg"
+          alt="Timer"
+          css={{ width: "1.5em", height: "1.5em", marginBottom: 4 }}
+        />
         <span css={{ marginLeft: "1em" }}>{nowTime}</span>
       </div>
 
@@ -26,6 +36,7 @@ export const NowTime = () => {
           fontWeight: 300,
           opacity: sekki ? 1 : 0,
           transition: "all 1s",
+          fontFamily: "'UD デジタル 教科書体 N-R', 'Nunito', sans-serif",
         }}
       >
         {sekki && (

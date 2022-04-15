@@ -2,19 +2,16 @@ import { useCallback, useEffect, useReducer, useState } from "react";
 import { useInterval } from "../../hooks/useInterval";
 import * as dateFns from "date-fns";
 import { useApp } from "../../contexts/appContext";
+import { DispatchArgument, Values } from "../CountDown/CountDown";
 
 type State = {
   h: number;
   m: number;
   s: number;
+  text: string;
 };
 
-type Action = {
-  type: "h" | "m" | "s";
-  value: number;
-};
-
-const reducer = (state: State, action: Action) => {
+const reducer = (state: State, action: DispatchArgument) => {
   switch (action.type) {
     case "h":
       return { ...state, h: action.value };
@@ -22,6 +19,9 @@ const reducer = (state: State, action: Action) => {
       return { ...state, m: action.value };
     case "s":
       return { ...state, s: action.value };
+    case "text":
+      localStorage.setItem("notice_text", action.value);
+      return { ...state, text: action.value };
   }
   return state;
 };
@@ -41,43 +41,36 @@ const calculate = (state: State) => {
 };
 
 export const useAlarm = () => {
-  const values = {
+  const values: Values = {
     h: new Date().getHours() + 1,
     m: "00",
     s: "00",
+    text: localStorage.getItem("notice_text") || "",
   };
   const [state, dispatch] = useReducer(reducer, {
     h: Number(values.h),
     m: Number(values.m),
     s: Number(values.s),
+    text: values.text,
   });
   const [counter, setCounter] = useState(0);
   const { start, stop, active } = useInterval({
     onUpdate: () => setCounter(counter - 1),
   });
   const [endDate, setEndDate] = useState<Date>();
-  const { permission, requestPermission } = useApp();
+  const { notice } = useApp();
 
   useEffect(() => {
     if (counter <= 0) {
       if (active) {
-        new Notification("時間になりました！", {
-          body: "",
-          icon: "/logo192.png",
-        });
+        notice(state.text);
       }
       stop();
     }
-  }, [active, counter, stop]);
+  }, [active, counter, notice, state.text, stop]);
 
   const onSubmit = useCallback(
     (e) => {
-      if (permission !== "granted") {
-        requestPermission();
-        e.preventDefault();
-        return;
-      }
-
       const { seconds, endDate } = calculate(state);
 
       if (seconds <= 0) {
@@ -90,15 +83,10 @@ export const useAlarm = () => {
       start();
       e.preventDefault();
     },
-    [permission, requestPermission, start, state]
+    [start, state]
   );
 
   const restart = useCallback(() => {
-    if (permission !== "granted") {
-      requestPermission();
-      return;
-    }
-
     const { seconds, endDate } = calculate(state);
 
     if (seconds <= 0) {
@@ -110,7 +98,7 @@ export const useAlarm = () => {
     setEndDate(endDate);
     setCounter(seconds);
     start();
-  }, [permission, state, start, requestPermission, stop]);
+  }, [state, start, stop]);
 
   return {
     values,
