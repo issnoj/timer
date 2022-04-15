@@ -4,7 +4,20 @@ type Props = {
   onUpdate: () => void;
 };
 
-let timerId: NodeJS.Timer;
+let stopSuperInterval: () => void;
+
+const superInterval = (cb: Function, interval: number, ...args: any[]) => {
+  try {
+    const code = "onmessage=(e)=>{setInterval(()=>postMessage(null),e.data)}";
+    const w = new Worker(`data:text/javascript;base64,${Buffer.from(code)}`);
+    w.onmessage = () => cb(...args);
+    w.postMessage(interval);
+    return { stop: () => w.terminate() };
+  } catch (_) {
+    const id = setInterval(cb, interval, ...args);
+    return { stop: () => clearInterval(id) };
+  }
+};
 
 export const useInterval = ({ onUpdate }: Props) => {
   const [active, setActive] = useState(false);
@@ -15,13 +28,13 @@ export const useInterval = ({ onUpdate }: Props) => {
   }, [onUpdate]);
 
   useEffect(() => {
-    timerId && clearInterval(timerId);
+    stopSuperInterval && stopSuperInterval();
     if (active) {
-      timerId = setInterval(() => {
+      stopSuperInterval = superInterval(() => {
         onUpdateRef.current();
-      }, 1000);
+      }, 1000).stop;
     }
-    return () => clearInterval(timerId);
+    return () => stopSuperInterval && stopSuperInterval();
   }, [active]);
 
   const start = useCallback(() => {
