@@ -8,6 +8,7 @@ import { useApp } from "../../contexts/appContext";
 import { Values } from "../CountDown/CountDown";
 
 export const useAlarm = () => {
+  const { notice, setTitle } = useApp();
   const values: Values = {
     h: new Date().getHours() + 1,
     m: "00",
@@ -25,12 +26,11 @@ export const useAlarm = () => {
     onUpdate: () => {
       const newCounter = counter - 1;
       setCounter(newCounter);
-      document.title = format(newCounter);
+      setTitle(format(newCounter));
     },
   });
   const [text, setText] = useState(values.text);
   const [endDate, setEndDate] = useState<Date>();
-  const { notice } = useApp();
 
   const _setText = useCallback((value: string) => {
     localStorage.setItem("notice_text", value);
@@ -43,9 +43,9 @@ export const useAlarm = () => {
         notice(text);
       }
       stop();
-      document.title = "Timer";
+      setTitle();
     }
-  }, [active, counter, notice, text, stop]);
+  }, [active, counter, notice, text, stop, setTitle]);
 
   const onSubmit = useCallback(
     (e) => {

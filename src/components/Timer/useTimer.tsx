@@ -13,6 +13,7 @@ const calculateEndDate = (counter: number) => {
 };
 
 export const useTimer = () => {
+  const { notice, setTitle } = useApp();
   const values: Values = {
     h: "",
     m: "3",
@@ -30,12 +31,11 @@ export const useTimer = () => {
     onUpdate: () => {
       const newCounter = counter - 1;
       setCounter(newCounter);
-      document.title = format(newCounter);
+      setTitle(format(newCounter));
     },
   });
   const [text, setText] = useState(values.text);
   const [endDate, setEndDate] = useState<Date>();
-  const { notice } = useApp();
 
   const _setText = useCallback((value: string) => {
     localStorage.setItem("notice_text", value);
@@ -48,9 +48,9 @@ export const useTimer = () => {
         notice(text);
       }
       stop();
-      document.title = "Timer";
+      setTitle();
     }
-  }, [active, counter, notice, text, stop]);
+  }, [active, counter, notice, text, stop, setTitle]);
 
   const onSubmit = useCallback(
     (e) => {
@@ -96,8 +96,8 @@ export const useTimer = () => {
     setEndDate(endDate);
     setCounter(seconds);
     stop();
-    document.title = "Timer";
-  }, [calcAsTimer, stop]);
+    setTitle();
+  }, [calcAsTimer, setTitle, stop]);
 
   return {
     values,

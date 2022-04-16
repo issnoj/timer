@@ -1,10 +1,12 @@
-import { createContext, FC, useContext, useEffect } from "react";
+import { createContext, FC, useCallback, useContext, useEffect } from "react";
 import { useWindowOpen } from "../hooks/useWindowOpen";
 
 const AppContext = createContext<{
   notice: (v: string) => void;
+  setTitle: (v?: string) => void;
 }>({
   notice: () => {},
+  setTitle: () => {},
 });
 
 export const AppProvider: FC = ({ children }) => {
@@ -13,29 +15,38 @@ export const AppProvider: FC = ({ children }) => {
     features: { height: 610 },
   });
 
-  const notice = (text: string) => {
-    if (text.match(/^(https?:\/\/|\/\/).+$/)) {
-      open(text);
-    } else if (Notification.permission === "granted") {
-      new Notification(text || "時間です", {
-        body: "",
-        icon: "/logo192.png",
-      });
-    } else {
-      window.open(
-        `https://placehold.jp/ffffff/000000/780x590.png?text=${
-          text || "時間です"
-        }`
-      );
-    }
-  };
+  const notice = useCallback(
+    (text: string) => {
+      if (text.match(/^(https?:\/\/|\/\/).+$/)) {
+        open(text);
+      } else if (Notification.permission === "granted") {
+        new Notification(text || "時間です", {
+          body: "",
+          icon: "/logo192.png",
+        });
+      } else {
+        window.open(
+          `https://placehold.jp/ffffff/000000/780x590.png?text=${
+            text || "時間です"
+          }`
+        );
+      }
+    },
+    [open]
+  );
+
+  const setTitle = useCallback((title?: string) => {
+    document.title = title || "Timer";
+  }, []);
 
   useEffect(() => {
     Notification.requestPermission().then();
   }, []);
 
   return (
-    <AppContext.Provider value={{ notice }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ notice, setTitle }}>
+      {children}
+    </AppContext.Provider>
   );
 };
 
