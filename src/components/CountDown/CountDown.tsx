@@ -11,19 +11,11 @@ export type Values = {
   text: string;
 };
 
-export type DispatchArgument =
-  | {
-      type: "h" | "m" | "s";
-      value: number;
-    }
-  | {
-      type: "text";
-      value: string;
-    };
-
 type Props = {
   values: Values;
-  dispatch: (o: DispatchArgument) => void;
+  setHour: (v: number) => void;
+  setMinute: (v: number) => void;
+  setSecond: (v: number) => void;
   onSubmit: (e: any) => void;
   counter: number;
   stop: () => void;
@@ -31,11 +23,14 @@ type Props = {
   reset?: () => void;
   restart: () => void;
   endDate?: Date;
+  setText: (v: string) => void;
 };
 
 export const CountDown = ({
   values,
-  dispatch,
+  setHour,
+  setMinute,
+  setSecond,
   onSubmit,
   counter,
   stop,
@@ -43,6 +38,7 @@ export const CountDown = ({
   reset,
   restart,
   endDate,
+  setText,
 }: Props) => {
   return (
     <div
@@ -69,26 +65,23 @@ export const CountDown = ({
               value={values.h}
               placeholder="h"
               unit="時"
-              onChange={(value) => dispatch({ type: "h", value })}
+              onChange={(value) => setHour(value)}
             />
             <InputNumberBox
               value={values.m}
               placeholder="m"
               unit="分"
-              onChange={(value) => dispatch({ type: "m", value })}
+              onChange={(value) => setMinute(value)}
             />
             <InputNumberBox
               value={values.s}
               placeholder="s"
               unit="秒"
-              onChange={(value) => dispatch({ type: "s", value })}
+              onChange={(value) => setSecond(value)}
             />
           </div>
 
-          <InputText
-            value={values.text}
-            onChange={(value) => dispatch({ type: "text", value })}
-          />
+          <InputText value={values.text} onChange={(value) => setText(value)} />
 
           <div
             css={{

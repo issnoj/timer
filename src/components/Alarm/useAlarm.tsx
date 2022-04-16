@@ -1,44 +1,8 @@
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useHourMinuteSecondState } from "../../hooks/useHourMinuteSecondState";
 import { useInterval } from "../../hooks/useInterval";
-import * as dateFns from "date-fns";
 import { useApp } from "../../contexts/appContext";
-import { DispatchArgument, Values } from "../CountDown/CountDown";
-
-type State = {
-  h: number;
-  m: number;
-  s: number;
-  text: string;
-};
-
-const reducer = (state: State, action: DispatchArgument) => {
-  switch (action.type) {
-    case "h":
-      return { ...state, h: action.value };
-    case "m":
-      return { ...state, m: action.value };
-    case "s":
-      return { ...state, s: action.value };
-    case "text":
-      localStorage.setItem("notice_text", action.value);
-      return { ...state, text: action.value };
-  }
-  return state;
-};
-
-const calculate = (state: State) => {
-  const endDate = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate(),
-    state.h,
-    state.m,
-    state.s
-  );
-  const seconds = dateFns.differenceInSeconds(endDate, new Date());
-
-  return { seconds, endDate };
-};
+import { Values } from "../CountDown/CountDown";
 
 export const useAlarm = () => {
   const values: Values = {
@@ -47,31 +11,37 @@ export const useAlarm = () => {
     s: "00",
     text: localStorage.getItem("notice_text") || "",
   };
-  const [state, dispatch] = useReducer(reducer, {
-    h: Number(values.h),
-    m: Number(values.m),
-    s: Number(values.s),
-    text: values.text,
-  });
+  const { setHour, setMinute, setSecond, calcAsTime } =
+    useHourMinuteSecondState({
+      h: Number(values.h),
+      m: Number(values.m),
+      s: Number(values.s),
+    });
   const [counter, setCounter] = useState(0);
   const { start, stop, active } = useInterval({
     onUpdate: () => setCounter(counter - 1),
   });
+  const [text, setText] = useState(values.text);
   const [endDate, setEndDate] = useState<Date>();
   const { notice } = useApp();
+
+  const _setText = useCallback((value: string) => {
+    localStorage.setItem("notice_text", value);
+    setText(value);
+  }, []);
 
   useEffect(() => {
     if (counter <= 0) {
       if (active) {
-        notice(state.text);
+        notice(text);
       }
       stop();
     }
-  }, [active, counter, notice, state.text, stop]);
+  }, [active, counter, notice, text, stop]);
 
   const onSubmit = useCallback(
     (e) => {
-      const { seconds, endDate } = calculate(state);
+      const { seconds, endDate } = calcAsTime();
 
       if (seconds <= 0) {
         e.preventDefault();
@@ -83,11 +53,11 @@ export const useAlarm = () => {
       start();
       e.preventDefault();
     },
-    [start, state]
+    [calcAsTime, start]
   );
 
   const restart = useCallback(() => {
-    const { seconds, endDate } = calculate(state);
+    const { seconds, endDate } = calcAsTime();
 
     if (seconds <= 0) {
       setCounter(0);
@@ -98,11 +68,14 @@ export const useAlarm = () => {
     setEndDate(endDate);
     setCounter(seconds);
     start();
-  }, [state, start, stop]);
+  }, [calcAsTime, start, stop]);
 
   return {
     values,
-    dispatch,
+    setHour,
+    setMinute,
+    setSecond,
+    setText: _setText,
     onSubmit,
     counter,
     stop,

@@ -43,7 +43,6 @@ export const useWindowOpen = ({ target, features }: Props) => {
       const features = Object.entries(_state.features)
         .map((v) => v.join("="))
         .join(",");
-      console.log(target || _state.target);
       window.open(url, target || _state.target, features);
     },
     [state]

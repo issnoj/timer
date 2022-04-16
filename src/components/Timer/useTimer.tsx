@@ -1,34 +1,9 @@
 import * as dateFns from "date-fns";
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useHourMinuteSecondState } from "../../hooks/useHourMinuteSecondState";
 import { useInterval } from "../../hooks/useInterval";
 import { useApp } from "../../contexts/appContext";
-import { DispatchArgument, Values } from "../CountDown/CountDown";
-
-type State = {
-  h: number;
-  m: number;
-  s: number;
-  text: string;
-};
-
-const reducer = (state: State, action: DispatchArgument) => {
-  switch (action.type) {
-    case "h":
-      return { ...state, h: action.value };
-    case "m":
-      return { ...state, m: action.value };
-    case "s":
-      return { ...state, s: action.value };
-    case "text":
-      localStorage.setItem("notice_text", action.value);
-      return { ...state, text: action.value };
-  }
-  return state;
-};
-
-const calculateSeconds = (state: State) => {
-  return state.h * 3600 + state.m * 60 + state.s;
-};
+import { Values } from "../CountDown/CountDown";
 
 const calculateEndDate = (counter: number) => {
   return dateFns.addSeconds(new Date(), counter);
@@ -41,31 +16,37 @@ export const useTimer = () => {
     s: "00",
     text: localStorage.getItem("notice_text") || "",
   };
-  const [state, dispatch] = useReducer(reducer, {
-    h: Number(values.h),
-    m: Number(values.m),
-    s: Number(values.s),
-    text: values.text,
-  });
+  const { setHour, setMinute, setSecond, calcAsTimer } =
+    useHourMinuteSecondState({
+      h: Number(values.h),
+      m: Number(values.m),
+      s: Number(values.s),
+    });
   const [counter, setCounter] = useState(0);
   const { start, stop, active } = useInterval({
     onUpdate: () => setCounter(counter - 1),
   });
+  const [text, setText] = useState(values.text);
   const [endDate, setEndDate] = useState<Date>();
   const { notice } = useApp();
+
+  const _setText = useCallback((value: string) => {
+    localStorage.setItem("notice_text", value);
+    setText(value);
+  }, []);
 
   useEffect(() => {
     if (counter <= 0) {
       if (active) {
-        notice(state.text);
+        notice(text);
       }
       stop();
     }
-  }, [active, counter, notice, state.text, stop]);
+  }, [active, counter, notice, text, stop]);
 
   const onSubmit = useCallback(
     (e) => {
-      const seconds = calculateSeconds(state);
+      const { seconds } = calcAsTimer();
       const endDate = calculateEndDate(seconds);
 
       if (!seconds) {
@@ -78,11 +59,11 @@ export const useTimer = () => {
       start();
       e.preventDefault();
     },
-    [start, state]
+    [calcAsTimer, start]
   );
 
   const restart = useCallback(() => {
-    const seconds = calculateSeconds(state);
+    const { seconds } = calcAsTimer();
     let endDate;
 
     if (!seconds) {
@@ -98,20 +79,23 @@ export const useTimer = () => {
 
     setEndDate(endDate);
     start();
-  }, [counter, start, state]);
+  }, [calcAsTimer, counter, start]);
 
   const reset = useCallback(() => {
-    const seconds = calculateSeconds(state);
+    const { seconds } = calcAsTimer();
     const endDate = calculateEndDate(seconds);
 
     setEndDate(endDate);
     setCounter(seconds);
     stop();
-  }, [state, stop]);
+  }, [calcAsTimer, stop]);
 
   return {
     values,
-    dispatch,
+    setHour,
+    setMinute,
+    setSecond,
+    setText: _setText,
     onSubmit,
     counter,
     stop,

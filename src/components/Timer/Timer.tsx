@@ -4,7 +4,9 @@ import { useTimer } from "./useTimer";
 export const Timer = () => {
   const {
     values,
-    dispatch,
+    setHour,
+    setMinute,
+    setSecond,
     onSubmit,
     counter,
     stop,
@@ -12,12 +14,15 @@ export const Timer = () => {
     reset,
     restart,
     endDate,
+    setText,
   } = useTimer();
 
   return (
     <CountDown
       values={values}
-      dispatch={dispatch}
+      setHour={setHour}
+      setMinute={setMinute}
+      setSecond={setSecond}
       onSubmit={onSubmit}
       counter={counter}
       stop={stop}
@@ -25,6 +30,7 @@ export const Timer = () => {
       reset={reset}
       restart={restart}
       endDate={endDate}
+      setText={setText}
     />
   );
 };
