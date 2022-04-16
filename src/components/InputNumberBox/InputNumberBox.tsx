@@ -5,6 +5,7 @@ type Props = {
   placeholder: string;
   unit: string;
   onChange: (v: number) => void;
+  max: number;
 };
 
 export const InputNumberBox = ({
@@ -12,6 +13,7 @@ export const InputNumberBox = ({
   placeholder,
   unit,
   onChange,
+  max,
 }: Props) => {
   return (
     <div
@@ -27,7 +29,7 @@ export const InputNumberBox = ({
       <InputNumber
         value={value}
         min={0}
-        max={99}
+        max={max}
         maxLength={2}
         placeholder={placeholder}
         onChange={onChange}

@@ -65,18 +65,21 @@ export const CountDown = ({
               value={values.h}
               placeholder="h"
               unit="時"
+              max={99}
               onChange={(value) => setHour(value)}
             />
             <InputNumberBox
               value={values.m}
               placeholder="m"
               unit="分"
+              max={59}
               onChange={(value) => setMinute(value)}
             />
             <InputNumberBox
               value={values.s}
               placeholder="s"
               unit="秒"
+              max={59}
               onChange={(value) => setSecond(value)}
             />
           </div>

@@ -17,24 +17,25 @@ export const InputNumber = ({
   placeholder,
   onChange,
 }: Props) => {
-  const { value, onKeyPress, _onChange } = useInputNumber({
+  const { value, onKeyPress, _onChange, ref, onMouseOver } = useInputNumber({
     defaultValue,
     onChange,
+    max,
   });
 
   return (
     <input
+      ref={ref}
       type="number"
       autoComplete="off"
       spellCheck={false}
       size={2}
-      min={min}
-      max={max}
       maxLength={maxLength}
       placeholder={placeholder}
       value={value}
       onKeyPress={onKeyPress}
       onChange={_onChange}
+      onMouseOver={onMouseOver}
       css={{
         fontFamily: "Nunito, sans-serif",
         fontSize: "2.5em",
