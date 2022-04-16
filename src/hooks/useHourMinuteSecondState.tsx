@@ -1,6 +1,13 @@
 import * as dateFns from "date-fns";
 import { useCallback, useReducer } from "react";
 
+export const format = (seconds: number) => {
+  const s = `0${seconds % 60}`.slice(-2);
+  const m = `0${Math.floor((seconds % (60 * 60)) / 60)}`.slice(-2);
+  const h = `0${Math.floor(seconds / (60 * 60))}`.slice(-2);
+  return `${h}:${m}:${s}`;
+};
+
 type State = {
   h: number;
   m: number;

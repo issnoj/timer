@@ -1,16 +1,10 @@
 import * as dateFns from "date-fns";
+import { format } from "../../hooks/useHourMinuteSecondState";
 
 type Props = {
   seconds: number;
   active: boolean;
   endDate?: Date;
-};
-
-const format = (seconds: number) => {
-  const s = `0${seconds % 60}`.slice(-2);
-  const m = `0${Math.floor((seconds % (60 * 60)) / 60)}`.slice(-2);
-  const h = `0${Math.floor(seconds / (60 * 60))}`.slice(-2);
-  return `${h}:${m}:${s}`;
 };
 
 export const Counter = ({ seconds, active, endDate }: Props) => {

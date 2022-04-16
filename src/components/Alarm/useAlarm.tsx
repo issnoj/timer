@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { useHourMinuteSecondState } from "../../hooks/useHourMinuteSecondState";
+import {
+  format,
+  useHourMinuteSecondState,
+} from "../../hooks/useHourMinuteSecondState";
 import { useInterval } from "../../hooks/useInterval";
 import { useApp } from "../../contexts/appContext";
 import { Values } from "../CountDown/CountDown";
@@ -19,7 +22,11 @@ export const useAlarm = () => {
     });
   const [counter, setCounter] = useState(0);
   const { start, stop, active } = useInterval({
-    onUpdate: () => setCounter(counter - 1),
+    onUpdate: () => {
+      const newCounter = counter - 1;
+      setCounter(newCounter);
+      document.title = format(newCounter);
+    },
   });
   const [text, setText] = useState(values.text);
   const [endDate, setEndDate] = useState<Date>();
@@ -36,6 +43,7 @@ export const useAlarm = () => {
         notice(text);
       }
       stop();
+      document.title = "Timer";
     }
   }, [active, counter, notice, text, stop]);
 

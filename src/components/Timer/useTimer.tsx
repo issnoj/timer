@@ -1,6 +1,9 @@
 import * as dateFns from "date-fns";
 import { useCallback, useEffect, useState } from "react";
-import { useHourMinuteSecondState } from "../../hooks/useHourMinuteSecondState";
+import {
+  format,
+  useHourMinuteSecondState,
+} from "../../hooks/useHourMinuteSecondState";
 import { useInterval } from "../../hooks/useInterval";
 import { useApp } from "../../contexts/appContext";
 import { Values } from "../CountDown/CountDown";
@@ -24,7 +27,11 @@ export const useTimer = () => {
     });
   const [counter, setCounter] = useState(0);
   const { start, stop, active } = useInterval({
-    onUpdate: () => setCounter(counter - 1),
+    onUpdate: () => {
+      const newCounter = counter - 1;
+      setCounter(newCounter);
+      document.title = format(newCounter);
+    },
   });
   const [text, setText] = useState(values.text);
   const [endDate, setEndDate] = useState<Date>();
@@ -41,6 +48,7 @@ export const useTimer = () => {
         notice(text);
       }
       stop();
+      document.title = "Timer";
     }
   }, [active, counter, notice, text, stop]);
 
@@ -88,6 +96,7 @@ export const useTimer = () => {
     setEndDate(endDate);
     setCounter(seconds);
     stop();
+    document.title = "Timer";
   }, [calcAsTimer, stop]);
 
   return {
