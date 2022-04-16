@@ -9,7 +9,7 @@ let stopSuperInterval: () => void;
 const superInterval = (cb: Function, interval: number, ...args: any[]) => {
   try {
     const code = "onmessage=(e)=>{setInterval(()=>postMessage(null),e.data)}";
-    const w = new Worker(`data:text/javascript;base64,${Buffer.from(code)}`);
+    const w = new Worker(`data:text/javascript;base64,${window.btoa(code)}`);
     w.onmessage = () => cb(...args);
     w.postMessage(interval);
     return { stop: () => w.terminate() };
