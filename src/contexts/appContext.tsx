@@ -1,4 +1,5 @@
 import { createContext, FC, useContext, useEffect } from "react";
+import { useWindowOpen } from "../hooks/useWindowOpen";
 
 const AppContext = createContext<{
   notice: (v: string) => void;
@@ -7,25 +8,25 @@ const AppContext = createContext<{
 });
 
 export const AppProvider: FC = ({ children }) => {
-  const notice = (text: string) => {
-    const width = 800;
-    const height = 610;
-    const top = (window.screen.height - height) / 2;
-    const left = (window.screen.width - width) / 2;
-    const features = `width=${width},height=${height},top=${top},left=${left}`;
+  const { open } = useWindowOpen({
+    target: "timer",
+    features: { height: 610 },
+  });
 
+  const notice = (text: string) => {
     if (text.match(/^(https?:\/\/|\/\/).+$/)) {
-      window.open(text, "timer", features);
+      open(text);
     } else if (Notification.permission === "granted") {
       new Notification(text || "時間です", {
         body: "",
         icon: "/logo192.png",
       });
     } else {
-      const url = `https://placehold.jp/ffffff/000000/780x590.png?text=${
-        text || "時間です"
-      }`;
-      window.open(url, "timer", features);
+      window.open(
+        `https://placehold.jp/ffffff/000000/780x590.png?text=${
+          text || "時間です"
+        }`
+      );
     }
   };
 
