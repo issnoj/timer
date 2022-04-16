@@ -1,6 +1,7 @@
+import { useTheme } from "@emotion/react";
 import { Button } from "../Button/Button";
 import { Counter } from "../Counter/Counter";
-import { InputNumberBox } from "../InputNumberBox/InputNumberBox";
+import { InputNumber } from "../InputNumber/InputNumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputText } from "../InputText/InputText";
 
@@ -9,6 +10,13 @@ export type Values = {
   m: number | string;
   s: number | string;
   text: string;
+};
+
+type InputNumberOption = {
+  type: "h" | "m" | "s";
+  unit: string;
+  max: number;
+  onChange: (v: number) => void;
 };
 
 type Props = {
@@ -40,18 +48,30 @@ export const CountDown = ({
   endDate,
   setText,
 }: Props) => {
+  const theme = useTheme();
+  const inputNumberOptions = [
+    {
+      type: "h",
+      unit: "時",
+      max: 99,
+      onChange: (value: number) => setHour(value),
+    },
+    {
+      type: "m",
+      unit: "分",
+      max: 59,
+      onChange: (value: number) => setMinute(value),
+    },
+    {
+      type: "s",
+      unit: "秒",
+      max: 59,
+      onChange: (value: number) => setSecond(value),
+    },
+  ] as InputNumberOption[];
   return (
-    <div
-      css={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        css={{
-          fontSize: "2.5rem",
-        }}
-      >
+    <div>
+      <div>
         <form onSubmit={onSubmit}>
           <input type="submit" css={{ display: "none" }} />
           <div
@@ -61,52 +81,69 @@ export const CountDown = ({
               justifyContent: "center",
             }}
           >
-            <InputNumberBox
-              value={values.h}
-              placeholder="h"
-              unit="時"
-              max={99}
-              onChange={(value) => setHour(value)}
-            />
-            <InputNumberBox
-              value={values.m}
-              placeholder="m"
-              unit="分"
-              max={59}
-              onChange={(value) => setMinute(value)}
-            />
-            <InputNumberBox
-              value={values.s}
-              placeholder="s"
-              unit="秒"
-              max={59}
-              onChange={(value) => setSecond(value)}
-            />
+            {inputNumberOptions.map((v) => {
+              return (
+                <div
+                  css={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "30%",
+                    position: "relative",
+                  }}
+                >
+                  <InputNumber
+                    value={values[v.type]}
+                    min={0}
+                    max={v.max}
+                    maxLength={2}
+                    placeholder={v.type}
+                    onChange={v.onChange}
+                  />
+                  <div
+                    css={{
+                      marginLeft: "1em",
+                    }}
+                  >
+                    {v.unit}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-
-          <InputText value={values.text} onChange={(value) => setText(value)} />
 
           <div
             css={{
+              marginTop: 32,
+            }}
+          >
+            <InputText
+              value={values.text}
+              onChange={(value) => setText(value)}
+            />
+          </div>
+
+          <div
+            css={{
+              marginTop: 16,
               display: "flex",
               alignItems: "center",
               justifyContent: "space-around",
-              height: 160,
-              fontSize: "1.5rem",
+              height: 100,
             }}
           >
             <div
               css={{
                 width: "10em",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
               }}
             >
               {!active ? (
                 <Button type="button" onClick={restart}>
                   <div css={{ width: "100%" }}>
-                    <FontAwesomeIcon icon="play" style={{ color: "#707070" }} />
+                    <FontAwesomeIcon
+                      icon="play"
+                      style={{ color: theme.palette.text.icon }}
+                    />
                     <span css={{ marginLeft: "0.6em" }}>開始</span>
                   </div>
                 </Button>
@@ -115,7 +152,7 @@ export const CountDown = ({
                   <div css={{ width: "100%" }}>
                     <FontAwesomeIcon
                       icon="pause"
-                      style={{ color: "#707070" }}
+                      style={{ color: theme.palette.text.icon }}
                     />
                     <span css={{ marginLeft: ".6em" }}>一時停止</span>
                   </div>
@@ -127,15 +164,12 @@ export const CountDown = ({
               <div
                 css={{
                   width: "10em",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                 }}
               >
                 <Button type={"button"} onClick={reset}>
                   <FontAwesomeIcon
                     icon="arrow-rotate-left"
-                    style={{ color: "#707070" }}
+                    style={{ color: theme.palette.text.icon }}
                   />
                   <span css={{ marginLeft: ".6em" }}>リセット</span>
                 </Button>
@@ -147,7 +181,6 @@ export const CountDown = ({
 
       <div
         css={{
-          borderTop: "1px solid #707070",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

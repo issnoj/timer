@@ -2,7 +2,7 @@ type Props = {
   children: any;
   type: "button" | "submit" | "reset" | undefined;
   onClick: () => void;
-  state?: "default" | "active";
+  state?: "default" | "disabled";
 };
 
 export const Button = ({
@@ -14,31 +14,39 @@ export const Button = ({
   return (
     <button
       type={type}
-      css={{
+      css={(theme) => () => ({
+        fontSize: theme.typography.body1.fontSize,
         width: "100%",
-        height: 80,
-        border: "1px solid #707070",
+        height: 60,
+        border: `1px solid ${theme.palette.divider}`,
         borderRadius: 10,
         cursor: "pointer",
         transition: "all 50ms",
-        boxShadow: "10px 10px 0 rgba(0,0,0,0.16)",
-        backgroundColor: "#f0f0f0",
+        boxShadow: `10px 10px 0 ${theme.palette.button.boxShadow}`,
+        color: theme.palette.button.default,
+        backgroundColor: theme.palette.button.defaultBackground,
+        userSelect: "none",
         "&:hover": {
-          backgroundColor: "#ffffff",
+          color: theme.palette.button.hover,
+          backgroundColor: theme.palette.button.hoverBackground,
         },
         "&:active": {
-          backgroundColor: "#ffffff",
-          boxShadow: "5px 5px 0 rgba(0,0,0,0.16)",
-          marginTop: 10,
-          marginLeft: 10,
+          color: theme.palette.button.active,
+          backgroundColor: theme.palette.button.activeBackground,
+          boxShadow: `3px 3px 0 ${theme.palette.button.boxShadow}`,
+          marginTop: 14,
+          marginLeft: 14,
         },
-        ...(state === "active" && {
-          backgroundColor: "#ffffff",
-          boxShadow: "5px 5px 0 rgba(0,0,0,0.16)",
-          marginTop: 10,
-          marginLeft: 10,
+        ...(state === "disabled" && {
+          pointerEvents: "none",
+          color: theme.palette.button.disabled,
+          backgroundColor: theme.palette.button.disabledBackground,
+          boxShadow: `3px 3px 0 ${theme.palette.button.boxShadow}`,
+          textShadow: `0 0 20px ${theme.palette.button.textShadow}`,
+          marginTop: 14,
+          marginLeft: 14,
         }),
-      }}
+      })}
       {...props}
     >
       {children}

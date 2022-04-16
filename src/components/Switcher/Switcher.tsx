@@ -26,7 +26,7 @@ export const Switcher = ({ active, changeTimer, changeAlarm }: Props) => {
         <Button
           type="button"
           onClick={changeTimer}
-          state={active === "timer" ? "active" : "default"}
+          state={active === "timer" ? "disabled" : "default"}
         >
           タイマー
         </Button>
@@ -42,7 +42,7 @@ export const Switcher = ({ active, changeTimer, changeAlarm }: Props) => {
         <Button
           type="button"
           onClick={changeAlarm}
-          state={active === "alarm" ? "active" : "default"}
+          state={active === "alarm" ? "disabled" : "default"}
         >
           アラーム
         </Button>

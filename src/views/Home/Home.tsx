@@ -12,22 +12,26 @@ export const Home = () => {
   return (
     <AppProvider>
       <div
-        css={{
+        css={(theme) => ({
           display: "flex",
           flexDirection: "column",
           maxWidth: 900,
           minHeight: "100vh",
           margin: "0 auto",
-          borderLeft: "1px solid #707070",
-          borderRight: "1px solid #707070",
-        }}
+          borderLeft: `1px solid ${theme.palette.divider}`,
+          borderRight: `1px solid ${theme.palette.divider}`,
+        })}
       >
-        <NowTime />
+        <div
+          css={(theme) => ({
+            borderBottom: `1px solid ${theme.palette.divider}`,
+          })}
+        >
+          <NowTime />
+        </div>
         <div
           css={{
-            borderTop: "1px solid #707070",
-            fontSize: "1.5rem",
-            paddingTop: "2rem",
+            marginTop: 16,
           }}
         >
           <Switcher
@@ -36,7 +40,11 @@ export const Home = () => {
             changeAlarm={() => setState("alarm")}
           />
         </div>
-        <div>
+        <div
+          css={{
+            marginTop: 32,
+          }}
+        >
           {state === "timer" && <Timer />}
           {state === "alarm" && <Alarm />}
         </div>

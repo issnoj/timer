@@ -31,10 +31,6 @@ img, picture {
     display: block
 }
 
-input, button, textarea, select {
-    font: inherit
-}
-
 @media (prefers-reduced-motion: reduce) {
     html:focus-within {
         scroll-behavior: auto
@@ -46,10 +42,4 @@ input, button, textarea, select {
         transition-duration: .01ms !important;
         scroll-behavior: auto !important
     }
-}
-
-html {
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    background-color: #f0f0f0;
 }

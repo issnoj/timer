@@ -1,5 +1,6 @@
 import { createContext, FC, useCallback, useContext, useEffect } from "react";
 import { useWindowOpen } from "../hooks/useWindowOpen";
+import { ThemeProvider } from "./themeContext";
 
 const AppContext = createContext<{
   notice: (v: string) => void;
@@ -45,7 +46,7 @@ export const AppProvider: FC = ({ children }) => {
 
   return (
     <AppContext.Provider value={{ notice, setTitle }}>
-      {children}
+      <ThemeProvider>{children}</ThemeProvider>
     </AppContext.Provider>
   );
 };

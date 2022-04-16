@@ -36,27 +36,27 @@ export const InputNumber = ({
       onKeyPress={onKeyPress}
       onChange={_onChange}
       onMouseOver={onMouseOver}
-      css={{
-        fontFamily: "Nunito, sans-serif",
-        fontSize: "2.5em",
+      css={(theme) => ({
+        fontSize: theme.typography.h1.fontSize,
         width: "2em",
         userSelect: "text",
         cursor: "text",
         outline: 0,
         padding: 0,
-        border: 0,
         textAlign: "center",
-        backgroundColor: "#ffffff",
+        color: "currentColor",
+        background: "none",
         transition: "all 150ms",
+        border: `1px solid ${theme.palette.divider}`,
         "&:hover, &:focus": {
-          backgroundColor: "#ffffff",
+          border: `1px solid ${theme.palette.text.secondary}`,
         },
         "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
           "-webkit-appearance": "none",
           "-moz-appearance": "textfield",
           margin: 0,
         },
-      }}
+      })}
     />
   );
 };

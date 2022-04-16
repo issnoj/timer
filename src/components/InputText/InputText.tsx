@@ -19,27 +19,29 @@ export const InputText = ({ value: defaultValue, onChange }: Props) => {
       placeholder={"通知メッセージ or URL"}
       value={value}
       onChange={_onChange}
-      css={{
-        fontFamily: "Nunito, sans-serif",
-        fontSize: "18px",
+      css={(theme) => ({
+        fontSize: theme.typography.body1.fontSize,
         width: "100%",
         userSelect: "text",
         cursor: "text",
         outline: 0,
-        padding: 8,
-        border: 0,
+        padding: ".8em",
         textAlign: "center",
-        backgroundColor: "#ffffff",
+        color: "currentColor",
+        background: "none",
         transition: "all 150ms",
+        border: `1px solid ${theme.palette.divider}`,
+        borderRight: 0,
+        borderLeft: 0,
         "&:hover, &:focus": {
-          backgroundColor: "#ffffff",
+          border: `1px solid ${theme.palette.text.secondary}`,
         },
         "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
           "-webkit-appearance": "none",
           "-moz-appearance": "textfield",
           margin: 0,
         },
-      }}
+      })}
     />
   );
 };

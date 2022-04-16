@@ -1,21 +1,25 @@
+import { useTheme } from "../../contexts/themeContext";
+import { Logo } from "../Logo/Logo";
 import { useNowTime } from "./useNowTime";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const NowTime = () => {
   const { nowTime, sekki } = useNowTime();
+  const { name, setTheme, theme } = useTheme();
 
   return (
     <div
-      css={{
-        color: "#707070",
+      css={(theme) => () => ({
+        fontSize: theme.typography.h6.fontSize,
+        color: theme.palette.text.secondary,
         letterSpacing: "0.1em",
         fontWeight: 300,
-        fontSize: "1.5em",
         height: 100,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         padding: "1.5em",
-      }}
+      })}
     >
       <div
         css={{
@@ -23,11 +27,7 @@ export const NowTime = () => {
           alignItems: "center",
         }}
       >
-        <img
-          src="/favicon.svg"
-          alt="Timer"
-          css={{ width: "1.5em", height: "1.5em", marginBottom: 4 }}
-        />
+        <Logo color={name === "dark" ? "dark" : "light"} size={32} />
         <span css={{ marginLeft: "1em" }}>{nowTime}</span>
       </div>
 
@@ -45,6 +45,25 @@ export const NowTime = () => {
             <span title={sekki.ko_yomi}>{sekki.ko}</span>
           </span>
         )}
+      </div>
+
+      <div
+        css={{
+          cursor: "pointer",
+          display: "flex",
+          color: theme.palette.text.icon,
+          transform: name === "light" ? "rotate(270deg)" : "rotate(90deg)",
+          transition: "all 300ms",
+          "&:hover": { color: theme.palette.text.primary },
+        }}
+      >
+        <FontAwesomeIcon
+          icon="circle-half-stroke"
+          style={{
+            color: "currentColor",
+          }}
+          onClick={() => setTheme(name === "light" ? "dark" : "light")}
+        />
       </div>
     </div>
   );
