@@ -29,7 +29,7 @@ export const useTimer = () => {
   const [counter, setCounter] = useState(0);
   const { start, pause, stop, state } = useInterval({
     onUpdate: () => {
-      const newCounter = counter - 1;
+      const newCounter = Math.max(counter - 1, 0);
       setCounter(newCounter);
       setTitle("▶ " + format(newCounter));
     },
@@ -69,6 +69,19 @@ export const useTimer = () => {
     },
     [calcAsTimer, start]
   );
+
+  const _start = useCallback(() => {
+    const { seconds } = calcAsTimer();
+    const endDate = calculateEndDate(seconds);
+
+    if (!seconds) {
+      return;
+    }
+
+    setEndDate(endDate);
+    setCounter(seconds);
+    start();
+  }, [calcAsTimer, start]);
 
   const restart = useCallback(() => {
     const { seconds } = calcAsTimer();
@@ -122,6 +135,7 @@ export const useTimer = () => {
     setText: _setText,
     onSubmit,
     counter,
+    start: _start,
     pause: _pause,
     stop: _stop,
     state,

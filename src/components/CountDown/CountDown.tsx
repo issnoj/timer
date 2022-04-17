@@ -26,6 +26,7 @@ type Props = {
   setSecond: (v: number) => void;
   onSubmit: (e: any) => void;
   counter: number;
+  start: () => void;
   pause: () => void;
   stop?: () => void;
   state: string;
@@ -43,6 +44,7 @@ export const CountDown = ({
   setSecond,
   onSubmit,
   counter,
+  start,
   pause,
   stop,
   state,
@@ -184,7 +186,11 @@ export const CountDown = ({
             >
               <Button
                 type="button"
-                onClick={state !== "play" ? restart : pause}
+                onClick={
+                  { play: pause, stop: start, pause: restart }[
+                    state
+                  ] as () => void
+                }
               >
                 <div css={{ width: "100%" }}>
                   <FontAwesomeIcon

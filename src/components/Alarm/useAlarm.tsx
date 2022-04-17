@@ -24,7 +24,8 @@ export const useAlarm = () => {
   const [counter, setCounter] = useState(0);
   const { start, pause, stop, state } = useInterval({
     onUpdate: () => {
-      const newCounter = counter - 1;
+      const { seconds } = calcAsTime();
+      const newCounter = Math.max(seconds, 0);
       setCounter(newCounter);
       setTitle("▶ " + format(newCounter));
     },
@@ -96,6 +97,7 @@ export const useAlarm = () => {
     setText: _setText,
     onSubmit,
     counter,
+    start: restart,
     pause: _pause,
     stop,
     state,

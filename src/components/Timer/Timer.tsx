@@ -9,6 +9,7 @@ export const Timer = () => {
     setSecond,
     onSubmit,
     counter,
+    start,
     pause,
     stop,
     state,
@@ -26,6 +27,7 @@ export const Timer = () => {
       setSecond={setSecond}
       onSubmit={onSubmit}
       counter={counter}
+      start={start}
       pause={pause}
       stop={stop}
       state={state}
