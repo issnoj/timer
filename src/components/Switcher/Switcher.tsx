@@ -1,4 +1,4 @@
-import { Button } from "../Button/Button";
+import { ButtonTab } from "../ButtonTab/ButtonTab";
 
 type Props = {
   active: string;
@@ -13,40 +13,21 @@ export const Switcher = ({ active, changeTimer, changeAlarm }: Props) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-around",
+        height: 100,
       }}
     >
-      <div
-        css={{
-          width: "10em",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+      <ButtonTab
+        onClick={changeTimer}
+        state={active === "timer" ? "active" : "default"}
       >
-        <Button
-          type="button"
-          onClick={changeTimer}
-          state={active === "timer" ? "disabled" : "default"}
-        >
-          タイマー
-        </Button>
-      </div>
-      <div
-        css={{
-          width: "10em",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        タイマー
+      </ButtonTab>
+      <ButtonTab
+        onClick={changeAlarm}
+        state={active === "alarm" ? "active" : "default"}
       >
-        <Button
-          type="button"
-          onClick={changeAlarm}
-          state={active === "alarm" ? "disabled" : "default"}
-        >
-          アラーム
-        </Button>
-      </div>
+        アラーム
+      </ButtonTab>
     </div>
   );
 };

@@ -2,27 +2,21 @@ type Props = {
   children: any;
   type: "button" | "submit" | "reset" | undefined;
   onClick: () => void;
-  state?: "default" | "disabled";
 };
 
-export const Button = ({
-  children,
-  type,
-  state = "default",
-  ...props
-}: Props) => {
+export const Button = ({ children, type, ...props }: Props) => {
   return (
     <button
       type={type}
       css={(theme) => () => ({
-        fontSize: theme.typography.body1.fontSize,
+        fontSize: theme.typography.h6.fontSize,
         width: "100%",
-        height: 60,
+        height: 160,
         border: `1px solid ${theme.palette.divider}`,
-        borderRadius: 10,
+        borderRadius: "50%",
         cursor: "pointer",
         transition: "all 50ms",
-        boxShadow: `10px 10px 0 ${theme.palette.button.boxShadow}`,
+        boxShadow: `0 6px 0 ${theme.palette.button.boxShadow}`,
         color: theme.palette.button.default,
         backgroundColor: theme.palette.button.defaultBackground,
         userSelect: "none",
@@ -33,19 +27,9 @@ export const Button = ({
         "&:active": {
           color: theme.palette.button.active,
           backgroundColor: theme.palette.button.activeBackground,
-          boxShadow: `3px 3px 0 ${theme.palette.button.boxShadow}`,
-          marginTop: 14,
-          marginLeft: 14,
+          boxShadow: `0 2px 0 ${theme.palette.button.boxShadow}`,
+          marginTop: 8,
         },
-        ...(state === "disabled" && {
-          pointerEvents: "none",
-          color: theme.palette.button.disabled,
-          backgroundColor: theme.palette.button.disabledBackground,
-          boxShadow: `3px 3px 0 ${theme.palette.button.boxShadow}`,
-          textShadow: `0 0 20px ${theme.palette.button.textShadow}`,
-          marginTop: 14,
-          marginLeft: 14,
-        }),
       })}
       {...props}
     >

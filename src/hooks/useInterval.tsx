@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+type State = "play" | "stop" | "pause";
+
 type Props = {
   onUpdate: () => void;
 };
@@ -20,7 +22,7 @@ const superInterval = (cb: Function, interval: number, ...args: any[]) => {
 };
 
 export const useInterval = ({ onUpdate }: Props) => {
-  const [active, setActive] = useState(false);
+  const [state, setState] = useState<State>("stop");
   const onUpdateRef = useRef<() => void>(() => {});
 
   useEffect(() => {
@@ -29,25 +31,30 @@ export const useInterval = ({ onUpdate }: Props) => {
 
   useEffect(() => {
     stopSuperInterval && stopSuperInterval();
-    if (active) {
+    if (state === "play") {
       stopSuperInterval = superInterval(() => {
         onUpdateRef.current();
       }, 1000).stop;
     }
     return () => stopSuperInterval && stopSuperInterval();
-  }, [active]);
+  }, [state]);
 
   const start = useCallback(() => {
-    setActive(true);
+    setState("play");
+  }, []);
+
+  const pause = useCallback(() => {
+    setState("pause");
   }, []);
 
   const stop = useCallback(() => {
-    setActive(false);
+    setState("stop");
   }, []);
 
   return {
     start,
+    pause,
     stop,
-    active,
+    state,
   };
 };

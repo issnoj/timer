@@ -8,7 +8,7 @@ import { useApp } from "../../contexts/appContext";
 import { Values } from "../CountDown/CountDown";
 
 export const useAlarm = () => {
-  const { notice, setTitle } = useApp();
+  const { notice, title, setTitle } = useApp();
   const values: Values = {
     h: new Date().getHours() + 1,
     m: "00",
@@ -22,15 +22,16 @@ export const useAlarm = () => {
       s: Number(values.s),
     });
   const [counter, setCounter] = useState(0);
-  const { start, stop, active } = useInterval({
+  const { start, pause, stop, state } = useInterval({
     onUpdate: () => {
       const newCounter = counter - 1;
       setCounter(newCounter);
-      setTitle(format(newCounter));
+      setTitle("▶ " + format(newCounter));
     },
   });
   const [text, setText] = useState(values.text);
   const [endDate, setEndDate] = useState<Date>();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const _setText = useCallback((value: string) => {
     localStorage.setItem("notice_text", value);
@@ -39,23 +40,25 @@ export const useAlarm = () => {
 
   useEffect(() => {
     if (counter <= 0) {
-      if (active) {
+      if (state === "play") {
         notice(text);
       }
       stop();
       setTitle();
     }
-  }, [active, counter, notice, text, stop, setTitle]);
+  }, [state, counter, notice, text, stop, setTitle]);
 
   const onSubmit = useCallback(
     (e) => {
       const { seconds, endDate } = calcAsTime();
 
       if (seconds <= 0) {
+        setErrorMessage("指定された時間は過ぎています。");
         e.preventDefault();
         return;
       }
 
+      setErrorMessage("");
       setEndDate(endDate);
       setCounter(seconds);
       start();
@@ -68,15 +71,22 @@ export const useAlarm = () => {
     const { seconds, endDate } = calcAsTime();
 
     if (seconds <= 0) {
+      setErrorMessage("指定された時間は過ぎています。");
       setCounter(0);
       stop();
       return;
     }
 
+    setErrorMessage("");
     setEndDate(endDate);
     setCounter(seconds);
     start();
   }, [calcAsTime, start, stop]);
+
+  const _pause = useCallback(() => {
+    setTitle("⏸ " + title.replace(/[▶⏸\s]/, ""));
+    pause();
+  }, [pause, setTitle, title]);
 
   return {
     values,
@@ -86,9 +96,11 @@ export const useAlarm = () => {
     setText: _setText,
     onSubmit,
     counter,
+    pause: _pause,
     stop,
-    active,
+    state,
     restart,
     endDate,
+    errorMessage,
   };
 };

@@ -9,11 +9,13 @@ export const Alarm = () => {
     setSecond,
     onSubmit,
     counter,
+    pause,
     stop,
-    active,
+    state,
     restart,
     endDate,
     setText,
+    errorMessage,
   } = useAlarm();
 
   return (
@@ -24,11 +26,13 @@ export const Alarm = () => {
       setSecond={setSecond}
       onSubmit={onSubmit}
       counter={counter}
+      pause={pause}
       stop={stop}
-      active={active}
+      state={state}
       restart={restart}
       endDate={endDate}
       setText={setText}
+      errorMessage={errorMessage}
     />
   );
 };

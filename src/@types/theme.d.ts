@@ -39,6 +39,9 @@ interface Typography {
 }
 
 interface Palette {
+  error: {
+    main: string;
+  };
   text: {
     primary: string;
     secondary: string;
@@ -57,6 +60,17 @@ interface Palette {
   counter: {
     running: string;
   };
+  buttonTab: {
+    default: string;
+    defaultBorder: string;
+    defaultBackground: string;
+    hover: string;
+    hoverBorder: string;
+    hoverBackground: string;
+    active: string;
+    activeBorder: string;
+    activeBackground: string;
+  };
   button: {
     default: string;
     defaultBackground: string;
@@ -64,9 +78,6 @@ interface Palette {
     hoverBackground: string;
     active: string;
     activeBackground: string;
-    disabled: string;
-    disabledBackground: string;
     boxShadow: string;
-    textShadow: string;
   };
 }

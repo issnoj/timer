@@ -4,7 +4,7 @@ import { Sekki, sekkis } from "../../sekkis";
 
 let timerId: NodeJS.Timer;
 
-const format = "yyyy年M月d日 HH時mm分ss秒";
+const format = "yyyy/M/d HH:mm:ss";
 
 export const useNowTime = () => {
   const [nowTime, setNowTime] = useState(dateFns.format(new Date(), format));

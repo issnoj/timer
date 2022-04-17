@@ -4,6 +4,7 @@ import {
   faPlay,
   faPause,
   faCircleHalfStroke,
+  faStop,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faArrowRotateLeft, faPlay, faPause, faCircleHalfStroke);
+library.add(faArrowRotateLeft, faPlay, faPause, faCircleHalfStroke, faStop);

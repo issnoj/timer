@@ -2,7 +2,6 @@ import { useInputNumber } from "./useInputNumber";
 
 type Props = {
   value: number | string;
-  min: number;
   max: number;
   maxLength: number;
   placeholder: string;
@@ -11,7 +10,6 @@ type Props = {
 
 export const InputNumber = ({
   value: defaultValue,
-  min,
   max,
   maxLength,
   placeholder,
@@ -39,6 +37,7 @@ export const InputNumber = ({
       css={(theme) => ({
         fontSize: theme.typography.h1.fontSize,
         width: "2em",
+        height: "1.5em",
         userSelect: "text",
         cursor: "text",
         outline: 0,
@@ -52,8 +51,7 @@ export const InputNumber = ({
           border: `1px solid ${theme.palette.text.secondary}`,
         },
         "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
-          "-webkit-appearance": "none",
-          "-moz-appearance": "textfield",
+          WebkitAppearance: "none",
           margin: 0,
         },
       })}

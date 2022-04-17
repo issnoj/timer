@@ -3,11 +3,11 @@ import { format } from "../../hooks/useHourMinuteSecondState";
 
 type Props = {
   seconds: number;
-  active: boolean;
+  state: string;
   endDate?: Date;
 };
 
-export const Counter = ({ seconds, active, endDate }: Props) => {
+export const Counter = ({ seconds, state, endDate }: Props) => {
   return (
     <div
       css={{
@@ -15,31 +15,33 @@ export const Counter = ({ seconds, active, endDate }: Props) => {
         userSelect: "none",
         display: "flex",
         flexDirection: "column",
-        opacity: active ? 1 : 0.2,
+        opacity: state === "play" ? 1 : 0.5,
       }}
     >
       <div
         css={(theme) => ({
-          fontSize: "11.5rem",
-          color: active
-            ? theme.palette.counter.running
-            : theme.palette.text.secondary,
+          textAlign: "center",
+          fontSize: "9rem",
+          color:
+            state === "play"
+              ? theme.palette.counter.running
+              : theme.palette.text.secondary,
         })}
       >
         {format(seconds)}
       </div>
 
-      {active && endDate && (
+      {endDate && (
         <div
           css={(theme) => () => ({
             color: theme.palette.text.secondary,
             fontWeight: 300,
-            fontSize: theme.typography.h3.fontSize,
+            fontSize: theme.typography.h4.fontSize,
             letterSpacing: "0.1em",
             textAlign: "center",
           })}
         >
-          {dateFns.format(endDate, "yyyy年M月d日 HH時mm分ss秒")}
+          {dateFns.format(endDate, "yyyy/M/d HH:mm:ss")}
         </div>
       )}
     </div>

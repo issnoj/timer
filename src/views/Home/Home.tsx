@@ -22,32 +22,30 @@ export const Home = () => {
           borderRight: `1px solid ${theme.palette.divider}`,
         })}
       >
+        <NowTime />
+
         <div
           css={(theme) => ({
+            borderTop: `1px solid ${theme.palette.divider}`,
             borderBottom: `1px solid ${theme.palette.divider}`,
           })}
         >
-          <NowTime />
+          <div
+            css={{
+              marginTop: -1,
+              marginBottom: -1,
+            }}
+          >
+            <Switcher
+              active={state}
+              changeTimer={() => setState("timer")}
+              changeAlarm={() => setState("alarm")}
+            />
+          </div>
         </div>
-        <div
-          css={{
-            marginTop: 16,
-          }}
-        >
-          <Switcher
-            active={state}
-            changeTimer={() => setState("timer")}
-            changeAlarm={() => setState("alarm")}
-          />
-        </div>
-        <div
-          css={{
-            marginTop: 32,
-          }}
-        >
-          {state === "timer" && <Timer />}
-          {state === "alarm" && <Alarm />}
-        </div>
+
+        {state === "timer" && <Timer />}
+        {state === "alarm" && <Alarm />}
       </div>
     </AppProvider>
   );

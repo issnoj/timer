@@ -13,7 +13,7 @@ const calculateEndDate = (counter: number) => {
 };
 
 export const useTimer = () => {
-  const { notice, setTitle } = useApp();
+  const { notice, title, setTitle } = useApp();
   const values: Values = {
     h: "",
     m: "3",
@@ -27,11 +27,11 @@ export const useTimer = () => {
       s: Number(values.s),
     });
   const [counter, setCounter] = useState(0);
-  const { start, stop, active } = useInterval({
+  const { start, pause, stop, state } = useInterval({
     onUpdate: () => {
       const newCounter = counter - 1;
       setCounter(newCounter);
-      setTitle(format(newCounter));
+      setTitle("▶ " + format(newCounter));
     },
   });
   const [text, setText] = useState(values.text);
@@ -44,13 +44,13 @@ export const useTimer = () => {
 
   useEffect(() => {
     if (counter <= 0) {
-      if (active) {
+      if (state === "play") {
         notice(text);
       }
       stop();
       setTitle();
     }
-  }, [active, counter, notice, text, stop, setTitle]);
+  }, [state, counter, notice, text, stop, setTitle]);
 
   const onSubmit = useCallback(
     (e) => {
@@ -89,7 +89,7 @@ export const useTimer = () => {
     start();
   }, [calcAsTimer, counter, start]);
 
-  const reset = useCallback(() => {
+  const _stop = useCallback(() => {
     const { seconds } = calcAsTimer();
     const endDate = calculateEndDate(seconds);
 
@@ -99,6 +99,21 @@ export const useTimer = () => {
     setTitle();
   }, [calcAsTimer, setTitle, stop]);
 
+  const reset = useCallback(() => {
+    const { seconds } = calcAsTimer();
+    const endDate = calculateEndDate(seconds);
+
+    setEndDate(endDate);
+    setCounter(seconds);
+    pause();
+    setTitle();
+  }, [calcAsTimer, pause, setTitle]);
+
+  const _pause = useCallback(() => {
+    setTitle("⏸ " + title.replace(/[▶⏸\s]/, ""));
+    pause();
+  }, [pause, setTitle, title]);
+
   return {
     values,
     setHour,
@@ -107,8 +122,9 @@ export const useTimer = () => {
     setText: _setText,
     onSubmit,
     counter,
-    stop,
-    active,
+    pause: _pause,
+    stop: _stop,
+    state,
     restart,
     reset,
     endDate,

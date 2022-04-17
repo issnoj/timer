@@ -11,7 +11,7 @@ export const NowTime = () => {
     <div
       css={(theme) => () => ({
         fontSize: theme.typography.h6.fontSize,
-        color: theme.palette.text.secondary,
+        color: theme.palette.text.primary,
         letterSpacing: "0.1em",
         fontWeight: 300,
         height: 100,

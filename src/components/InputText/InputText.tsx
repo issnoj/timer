@@ -22,10 +22,10 @@ export const InputText = ({ value: defaultValue, onChange }: Props) => {
       css={(theme) => ({
         fontSize: theme.typography.body1.fontSize,
         width: "100%",
+        height: 50,
         userSelect: "text",
         cursor: "text",
         outline: 0,
-        padding: ".8em",
         textAlign: "center",
         color: "currentColor",
         background: "none",
@@ -35,11 +35,6 @@ export const InputText = ({ value: defaultValue, onChange }: Props) => {
         borderLeft: 0,
         "&:hover, &:focus": {
           border: `1px solid ${theme.palette.text.secondary}`,
-        },
-        "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
-          "-webkit-appearance": "none",
-          "-moz-appearance": "textfield",
-          margin: 0,
         },
       })}
     />
